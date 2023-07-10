@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="english">
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+        <meta charset="UTF-8">
+        <title>Login Page</title>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        
+        
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+        <link href="static\css\login.css"  rel="stylesheet">
+        
+        {% include "includes/_message.html" %}
+        {% block body %}
+        {% endblock %}
+      </head>
+      <body>
+      <!-- partial:index.partial.html -->
+      <div class="box-form">
+          <div class="left">
+              <div class="overlay">
+              <h1>Leafo-2 Webmin.</h1>
+              <p>Prediksi Penyakit Daun Teh</p>
+              </div>
+          </div>
+          
+          
+              <div class="right">
+              <h5>Login</h5>
+              <br>
+              <br>
+              <br><br>
+              <br><br>
+              <p>Don't have an account? <a href="{{ url_for('register') }}">Create Your Account</a> it takes less than a minute</p>
+              <br><br>
+              <form action="" method="POST">
+              
+                  <div class="inputs">
+                      <input type="text" name="username" placeholder="username" required>
+                      <br>
+                      <input type="password" name="password" placeholder="password" required>
+                  </div>
+                      
+                      <br><br>
+                      
+                      
+                      <button type="submit">Login</button>
+            </form>
+          </div>
+          
+      </div>
+      <!-- partial -->
+        
+      </body>
+</html>

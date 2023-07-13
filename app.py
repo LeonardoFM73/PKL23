@@ -10,7 +10,7 @@ db=scoped_session(sessionmaker(bind=engine))
 
 
 app = Flask(__name__)
-# app.secret_key = "LeonardoFM"
+app.secret_key = "LeonardoFM"
 
 @app.route('/')
 def welcome():
@@ -68,6 +68,90 @@ def login():
                         return render_template('login.html')
 
         return render_template('login.html')
+
+@app.route('/add_data',methods=['POST','GET'])
+def add_data():
+    ID_Kebun=db.execute(text("Select ID_Kebun from kebun")).fetchall()
+    User_ID=db.execute(text("Select UserID from operator")).fetchall()
+    ID_Kebun=tuple(item[0] for item in ID_Kebun)
+    User_ID=tuple(item[0] for item in User_ID)
+
+    data=[
+        {
+            'ID_Kebun':ID_Kebun,
+            'User_ID':User_ID
+        }
+    ]
+    new_data=[
+        {
+            'ID_Kebun':ID_Kebun,
+            'User_ID':User_ID        
+        }
+        for item in data
+        for ID_Kebun,User_ID in zip(item['ID_Kebun'],item['User_ID'])
+    ]
+    if request.method=="POST":
+        Waktu=request.form.get("Waktu")
+        ID_Kebun=request.form.get("ID_Kebun")
+        User_ID=request.form.get("User_ID")
+        Nama_file=request.form.get("Nama_File")
+        Hasil_prediksi=request.form.get("Hasil_Prediksi")
+
+        db.execute(text("INSERT INTO data_prediksi(Waktu,ID_Kebun,UserID,Nama_File,Hasil_Prediksi) VALUES(:Waktu,:ID_Kebun,:UserID,:Nama_File,:Hasil_Prediksi)"),
+        {"Waktu":Waktu,"ID_Kebun":ID_Kebun,"UserID":User_ID,"Nama_File":Nama_file,"Hasil_Prediksi":Hasil_prediksi})
+        db.commit()
+        return redirect(url_for('data'))  
+
+
+    return render_template('/ltr/data_prediksi/add.html',data=new_data)
+
+
+@app.route('/add_kebun',methods=["POST","GET"])
+def add_kebun():
+    if request.method=="POST":
+        Latitude=request.form.get("Latitude")
+        Longitude=request.form.get("Longitude")
+        Alamat=request.form.get("Alamat")
+        Blok=request.form.get("Blok")
+
+        db.execute(text("INSERT INTO kebun(Latitude,Longitude,Alamat,Blok) VALUES(:Latitude,:Longitude,:Alamat,:Blok)"),
+        {"Latitude":Latitude,"Longitude":Longitude,"Alamat":Alamat,"Blok":Blok})
+        db.commit()
+        return redirect(url_for('kebun'))              
+
+    return render_template('/ltr/kebun/add.html')
+
+@app.route('/add_operator',methods=['POST','GET'])
+def add_operator():
+    ID_Kebun=db.execute(text("Select ID_Kebun from kebun")).fetchall()
+    ID_Kebun=tuple(item[0] for item in ID_Kebun)
+
+    data=[
+        {
+            'ID_Kebun':ID_Kebun
+        }
+    ]
+    new_data=[
+        {
+            'ID_Kebun':ID_Kebun,        
+        }
+        for item in data
+        for ID_Kebun in zip(item['ID_Kebun'])
+    ]
+    if request.method=='POST':
+        User_ID=request.form.get('UserID')
+        operator=request.form.get('Operator')
+        NoHP=request.form.get('NoHP')
+        ID_Kebun=request.form.get('ID_Kebun')
+        Alamat=request.form.get('Alamat')
+
+        db.execute(text("INSERT INTO operator(UserID,Nama_Operator,No_HP,ID_Kebun,Alamat) VALUES(:UserID,:Name_Operator,:NoHP,:ID_Kebun,:Alamat)"),
+        {"UserID":User_ID,"Name_Operator":operator,"NoHP":NoHP,"ID_Kebun":ID_Kebun,"Alamat":Alamat})
+        db.commit()
+        return redirect(url_for('operator'))  
+
+
+    return render_template('/ltr/operator/add.html',data=new_data)
 
 @app.route('/dashboard', methods=['GET'])
 def dashboard():

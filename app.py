@@ -4,13 +4,13 @@ from sqlalchemy.orm import scoped_session,sessionmaker
 
 from passlib.hash import sha256_crypt
 
-engine=create_engine("mysql+pymysql://root:@localhost:3306/Test")
+engine=create_engine("mysql+pymysql://root:@localhost:3306/leafo")
 #mysql+pymysql://username:password@localhost/databasename
 db=scoped_session(sessionmaker(bind=engine))
 
 
 app = Flask(__name__)
-app.secret_key = "LeonardoFM"
+# app.secret_key = "LeonardoFM"
 
 @app.route('/')
 def welcome():
@@ -26,12 +26,12 @@ def register():
         secure_password=sha256_crypt.encrypt(str(password))
         
 
-        usernamedata=db.execute(text("SELECT username FROM users WHERE username=:username"),{"username":username}).fetchone()
+        usernamedata=db.execute(text("SELECT username FROM admin WHERE username=:username"),{"username":username}).fetchone()
         #usernamedata=str(usernamedata)
         if usernamedata==None:
             if password==confirm:
-                db.execute(text("INSERT INTO users(name,username,password) VALUES(:name,:username,:password)"),
-        {"name":name,"username":username,"password":secure_password})
+                db.execute(text("INSERT INTO admin(Nama,username,password) VALUES(:Nama,:username,:password)"),
+        {"Nama":name,"username":username,"password":secure_password})
                 db.commit()
                 flash("You are registered and can now login","success")
                 return redirect(url_for('login'))
@@ -50,8 +50,8 @@ def login():
             username=request.form.get("username")
             password=request.form.get("password")
             
-            usernamedata=db.execute(text("SELECT username FROM users WHERE username=:username"),{"username":username}).fetchone()
-            passworddata=db.execute(text("SELECT password FROM users WHERE username=:username"),{"username":username}).fetchone()
+            usernamedata=db.execute(text("SELECT username FROM admin WHERE username=:username"),{"username":username}).fetchone()
+            passworddata=db.execute(text("SELECT password FROM admin WHERE username=:username"),{"username":username}).fetchone()
             
             if usernamedata is None:
                 flash("No username","danger")
@@ -69,8 +69,167 @@ def login():
 
         return render_template('login.html')
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['GET'])
 def dashboard():
-    return render_template('ltr/dashboard.html')
+    jumlah_kebun=db.execute(text("Select COUNT(*) from kebun")).fetchone()
+    jumlah_operator=db.execute(text("Select COUNT(*) from operator")).fetchone()
+    jumlah_data=db.execute(text("Select COUNT(*) from data_prediksi")).fetchone()
+    waktu=db.execute(text("Select Waktu from data_prediksi")).fetchall()
+    ID_kebun=db.execute(text("Select  ID_Kebun from data_prediksi")).fetchall()
+    User_ID=db.execute(text("Select   UserID from data_prediksi")).fetchall()
+    Nama_File=db.execute(text("Select Nama_File from data_prediksi")).fetchall()
+    Hasil_Prediksi=db.execute(text("Select Hasil_Prediksi from data_prediksi")).fetchall()
+    
+    waktu = tuple(item[0] for item in waktu)
+    ID_kebun = tuple(item[0] for item in ID_kebun)
+    User_ID = tuple(item[0] for item in User_ID)
+    Nama_File = tuple(item[0] for item in Nama_File)
+    Hasil_Prediksi = tuple(item[0] for item in Hasil_Prediksi)
+    
+    data=[
+        {
+            'jumlah':jumlah_kebun[0],
+            'operator':jumlah_operator[0],
+            'prediksi':jumlah_data[0],
+            'waktu':waktu,
+            'ID_Kebun':ID_kebun,
+            'User_ID':User_ID,
+            'Nama_File':Nama_File,
+            'Hasil_Prediksi':Hasil_Prediksi
+        }
+    ]
+    new_data = [
+    {
+
+        'waktu':waktu,
+        'ID_Kebun': kebun,
+        'User_ID': user,
+        'Nama_File': file,
+        'Hasil_Prediksi': hasil
+    }
+        for item in data
+        for waktu, kebun, user, file, hasil in zip(item['waktu'],item['ID_Kebun'], item['User_ID'], item['Nama_File'], item['Hasil_Prediksi'])
+    ]
+
+    return render_template('ltr/dashboard.html',data=data,data2=new_data)
+
+@app.route('/kebun', methods=['GET'])
+def kebun():
+    jumlah_kebun=db.execute(text("Select COUNT(*) from kebun")).fetchone()
+    ID_Kebun=db.execute(text("Select  ID_Kebun from kebun")).fetchall()
+    Latitude=db.execute(text("Select  Latitude from kebun")).fetchall()
+    Longitude=db.execute(text("Select  Longitude from kebun")).fetchall()
+    Alamat=db.execute(text("Select  Alamat from kebun")).fetchall()
+    #db.execute(text("Select IFNULL(blok, 'N/A') from kebun"))
+    blok=db.execute(text("Select Blok from kebun")).fetchall()
+
+    ID_Kebun = tuple(item[0] for item in ID_Kebun)
+    Latitude = tuple(item[0] for item in Latitude)
+    Longitude = tuple(item[0] for item in Longitude)
+    Alamat = tuple(item[0] for item in Alamat)
+    blok = tuple(item[0] for item in blok)
+
+    data=[
+        {
+            'jumlah':jumlah_kebun[0],
+            'ID_Kebun':ID_Kebun,
+            'Latitude':Latitude,
+            'Longitude':Longitude,
+            'Alamat':Alamat,
+            'blok':blok
+        }
+    ]
+    new_data=[
+        {
+            'ID_Kebun':ID_Kebun,
+            'Latitude':Latitude,
+            'Longitude':Longitude,
+            'Alamat':Alamat,
+            'blok':blok            
+        }
+        for item in data
+        for ID_Kebun, Latitude, Longitude, Alamat, blok in zip(item['ID_Kebun'],item['Latitude'],item['Longitude'],item['Alamat'],item['blok'])
+    ]
+
+    return render_template('ltr/kebun.html', data=data, data2=new_data)
+
+@app.route('/data', methods=['GET'])
+def data():
+    waktu=db.execute(text("Select Waktu from data_prediksi")).fetchall()
+    ID_kebun=db.execute(text("Select  ID_Kebun from data_prediksi")).fetchall()
+    User_ID=db.execute(text("Select   UserID from data_prediksi")).fetchall()
+    Nama_File=db.execute(text("Select Nama_File from data_prediksi")).fetchall()
+    Hasil_Prediksi=db.execute(text("Select Hasil_Prediksi from data_prediksi")).fetchall()
+    
+    waktu = tuple(item[0] for item in waktu)
+    ID_kebun = tuple(item[0] for item in ID_kebun)
+    User_ID = tuple(item[0] for item in User_ID)
+    Nama_File = tuple(item[0] for item in Nama_File)
+    Hasil_Prediksi = tuple(item[0] for item in Hasil_Prediksi)
+    
+    data=[
+        {
+            'waktu':waktu,
+            'ID_Kebun':ID_kebun,
+            'User_ID':User_ID,
+            'Nama_File':Nama_File,
+            'Hasil_Prediksi':Hasil_Prediksi
+        }
+    ]
+    new_data = [
+    {
+
+        'waktu':waktu,
+        'ID_Kebun': kebun,
+        'User_ID': user,
+        'Nama_File': file,
+        'Hasil_Prediksi': hasil
+    }
+        for item in data
+        for waktu, kebun, user, file, hasil in zip(item['waktu'],item['ID_Kebun'], item['User_ID'], item['Nama_File'], item['Hasil_Prediksi'])
+    ]
+    return render_template('ltr/data_prediksi.html',data=new_data)
+
+@app.route('/operator', methods=['GET'])
+def operator():
+    User_ID=db.execute(text("Select   UserID from operator")).fetchall()
+    Nama_Operator=db.execute(text("Select  Nama_Operator from operator")).fetchall()
+    No_HP=db.execute(text("Select  No_HP from operator")).fetchall()
+    ID_Kebun=db.execute(text("Select ID_Kebun from operator")).fetchall()
+    Alamat=db.execute(text("Select Alamat from operator")).fetchall()
+
+    User_ID = tuple(item[0] for item in User_ID)
+    Nama_Operator = tuple(item[0] for item in Nama_Operator)
+    No_HP = tuple(item[0] for item in No_HP)
+    ID_Kebun = tuple(item[0] for item in ID_Kebun)
+    Alamat = tuple(item[0] for item in Alamat)
+    
+    data=[
+        {
+            'User_ID':User_ID,
+            'Nama_Operator':Nama_Operator,
+            'No_HP':No_HP,
+            'ID_Kebun':ID_Kebun,
+            'Alamat':Alamat
+        }
+    ]
+    new_data=[
+        {
+            'User_ID':User_ID,
+            'Nama_Operator':Nama_Operator,
+            'No_HP':No_HP,
+            'ID_Kebun':ID_Kebun,
+            'Alamat':Alamat
+        }
+        for item in data
+        for User_ID, Nama_Operator, No_HP, ID_Kebun, Alamat in zip(item['User_ID'],item['Nama_Operator'], item['No_HP'], item['ID_Kebun'], item['Alamat'])
+    ]
+
+    return render_template('ltr/operator.html',data=new_data)
+
+@app.route('/profile')
+def profile():
+    return render_template('ltr/profile.html')
+
 if __name__ == '__main__':
     app.run(debug=True) 

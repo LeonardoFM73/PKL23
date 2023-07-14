@@ -153,6 +153,93 @@ def add_operator():
 
     return render_template('/ltr/operator/add.html',data=new_data)
 
+@app.route('/delete_data',methods=['POST','GET'])
+def delete_data():
+    return render_template('/ltr/data_prediksi/delete.html')
+
+@app.route('/delete_kebun',methods=['POST','GET'])
+def delete_kebun():
+    return render_template('/ltr/kebun/delete.html')
+
+@app.route('/delete_operator',methods=['POST','GET'])
+def delete_operator():
+    return render_template('/ltr/operator/delete.html')
+
+@app.route('/edit_data',methods=['POST','GET'])
+def edit_data():
+    if request.method == 'POST':
+        search = request.form.get('search')
+        result = getdata(search)
+    else:
+        result=[]
+    return render_template('/ltr/data_prediksi/edit.html',data=result)
+
+@app.route('/edit_data/<int:id>',methods=['POST','GET'])
+def edit_data_(id):
+    waktu=db.execute(text("Select Waktu from data_prediksi WHERE ID=:id"),{"id":id}).fetchall()
+    ID_kebun=db.execute(text("Select  ID_Kebun from data_prediksi WHERE ID=:id"),{"id":id}).fetchall()
+    User_ID=db.execute(text("Select   UserID from data_prediksi WHERE ID=:id"),{"id":id}).fetchall()
+    Nama_File=db.execute(text("Select Nama_File from data_prediksi WHERE ID=:id"),{"id":id}).fetchall()
+    Hasil_Prediksi=db.execute(text("Select Hasil_Prediksi from data_prediksi WHERE ID=:id"),{"id":id}).fetchall()
+    
+    waktu = tuple(item[0] for item in waktu)
+    ID_kebun = tuple(item[0] for item in ID_kebun)
+    User_ID = tuple(item[0] for item in User_ID)
+    Nama_File = tuple(item[0] for item in Nama_File)
+    Hasil_Prediksi = tuple(item[0] for item in Hasil_Prediksi)
+    
+    data=[
+        {
+            'waktu':waktu,
+            'ID_Kebun':ID_kebun,
+            'User_ID':User_ID,
+            'Nama_File':Nama_File,
+            'Hasil_Prediksi':Hasil_Prediksi
+        }
+    ]
+    new_data = [
+    {
+
+        'waktu':waktu,
+        'ID_Kebun': kebun,
+        'User_ID': user,
+        'Nama_File': file,
+        'Hasil_Prediksi': hasil
+    }
+        for item in data
+        for waktu, kebun, user, file, hasil in zip(item['waktu'],item['ID_Kebun'], item['User_ID'], item['Nama_File'], item['Hasil_Prediksi'])
+    ]
+    
+    if request.method == 'POST':
+        search = request.form.get('search')
+        result = getdata(search)
+    else:
+        result=[]
+    return render_template('/ltr/data_prediksi/editdata.html')
+
+@app.route('/edit_kebun',methods=['POST','GET'])
+def edit_kebun():
+    return render_template('/ltr/kebun/edit.html')
+
+@app.route('/edit_operator',methods=['POST','GET'])
+def edit_operator():
+    return render_template('/ltr/operator/edit.html')
+
+def getdata(search):
+    ID = db.execute(text("SELECT * FROM data_prediksi WHERE ID = :search"), {"search": search}).fetchall()
+
+    return ID
+
+def getkebun(search):
+    ID_Kebun=db.execute(text('SELECT * FROM '))
+
+    return ID_Kebun
+
+def getoperator(search):
+    results=db.execute(text('SELECT * FROM '))
+
+    return results
+
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
     jumlah_kebun=db.execute(text("Select COUNT(*) from kebun")).fetchone()

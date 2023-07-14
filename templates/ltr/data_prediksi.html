@@ -51,24 +51,26 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {% set counter = 2 %}
                                 {% for item in data %}
                                 <tr>
-                                    <th scope="row">1</th>
+                                    <th scope="row">{{counter}}</th>
                                     <td>{{item.User_ID}}</td>
                                     <td>{{item.waktu}}</td>
                                     <td>{{item.ID_Kebun}}</td>
                                     <td>{{item.Nama_File}}</td>
                                     <td>{{item.Hasil_Prediksi}}</td>
                                 </tr>
+                                {% set counter =  2 %}
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
                         <a href="{{url_for('add_data')}}" class="btn btn-success text-white"
                             target="_blank">Add</a>
-                        <a href="https://www.wrappixel.com/templates/xtremeadmin/" class="btn btn-danger text-white"
+                        <a href="{{url_for('delete_data')}}" class="btn btn-danger text-white"
                             target="_blank">Delete</a>
-                        <a href="https://www.wrappixel.com/templates/xtremeadmin/" class="btn btn-primary text-white"
+                        <a href="{{url_for('edit_data')}}" class="btn btn-primary text-white"
                             target="_blank">Edit</a>
                 </div>
             </div>

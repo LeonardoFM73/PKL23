@@ -155,15 +155,42 @@ def add_operator():
 
 @app.route('/delete_data',methods=['POST','GET'])
 def delete_data():
-    return render_template('/ltr/data_prediksi/delete.html')
+    if request.method == 'POST':
+        search = request.form.get('search')
+        result = getdata(search)
+    else:
+        result=[]
+    return render_template('/ltr/data_prediksi/delete.html',data=result)
+
+@app.route('/delete_data/<int:id>',methods=['POST','GET'])
+def delete_data_(id):
+    return render_template('/ltr/data_prediksi/deletedata.html')#,data=new_data,id=found_indexes)
 
 @app.route('/delete_kebun',methods=['POST','GET'])
 def delete_kebun():
-    return render_template('/ltr/kebun/delete.html')
+    if request.method == 'POST':
+        search = request.form.get('search')
+        result = getkebun(search)
+    else:
+        result=[]
+    return render_template('/ltr/kebun/delete.html',data=result)
+
+@app.route('/delete_kebun/<int:id>',methods=['POST','GET'])
+def delete_kebun_(id):
+    return render_template('/ltr/kebun/deletekebun.html')#,data=new_data,id=found_indexes)
 
 @app.route('/delete_operator',methods=['POST','GET'])
 def delete_operator():
-    return render_template('/ltr/operator/delete.html')
+    if request.method == 'POST':
+        search = request.form.get('search')
+        result = getoperator(search)
+    else:
+        result=[]
+    return render_template('/ltr/operator/delete.html',data=result)
+
+@app.route('/delete_operator/<userid>',methods=['POST','GET'])
+def delete_operator_(userid):
+    return render_template('/ltr/operator/deleteoperator.html')#,data=new_data,id=found_indexes)
 
 @app.route('/edit_data',methods=['POST','GET'])
 def edit_data():
@@ -176,12 +203,14 @@ def edit_data():
 
 @app.route('/edit_data/<int:id>',methods=['POST','GET'])
 def edit_data_(id):
-    waktu=db.execute(text("Select Waktu from data_prediksi WHERE ID=:id"),{"id":id}).fetchall()
-    ID_kebun=db.execute(text("Select  ID_Kebun from data_prediksi WHERE ID=:id"),{"id":id}).fetchall()
-    User_ID=db.execute(text("Select   UserID from data_prediksi WHERE ID=:id"),{"id":id}).fetchall()
-    Nama_File=db.execute(text("Select Nama_File from data_prediksi WHERE ID=:id"),{"id":id}).fetchall()
-    Hasil_Prediksi=db.execute(text("Select Hasil_Prediksi from data_prediksi WHERE ID=:id"),{"id":id}).fetchall()
+    ID=db.execute(text("Select ID from data_prediksi")).fetchall()
+    waktu=db.execute(text("Select Waktu from data_prediksi")).fetchall()
+    ID_kebun=db.execute(text("Select  ID_Kebun from kebun")).fetchall()
+    User_ID=db.execute(text("Select   UserID from operator")).fetchall()
+    Nama_File=db.execute(text("Select Nama_File from data_prediksi")).fetchall()
+    Hasil_Prediksi=db.execute(text("Select Hasil_Prediksi from data_prediksi")).fetchall()
     
+    ID = tuple(item[0] for item in ID)
     waktu = tuple(item[0] for item in waktu)
     ID_kebun = tuple(item[0] for item in ID_kebun)
     User_ID = tuple(item[0] for item in User_ID)
@@ -190,6 +219,7 @@ def edit_data_(id):
     
     data=[
         {
+            'ID':ID,
             'waktu':waktu,
             'ID_Kebun':ID_kebun,
             'User_ID':User_ID,
@@ -199,7 +229,7 @@ def edit_data_(id):
     ]
     new_data = [
     {
-
+        'ID':ID,
         'waktu':waktu,
         'ID_Kebun': kebun,
         'User_ID': user,
@@ -207,23 +237,159 @@ def edit_data_(id):
         'Hasil_Prediksi': hasil
     }
         for item in data
-        for waktu, kebun, user, file, hasil in zip(item['waktu'],item['ID_Kebun'], item['User_ID'], item['Nama_File'], item['Hasil_Prediksi'])
+        for ID,waktu, kebun, user, file, hasil in zip(item['ID'],item['waktu'],item['ID_Kebun'], item['User_ID'], item['Nama_File'], item['Hasil_Prediksi'])
     ]
     
+    found_indexes = 0
+
+    for i, item in enumerate(new_data):
+        if item['ID'] == id:
+            found_indexes=i
+
     if request.method == 'POST':
-        search = request.form.get('search')
-        result = getdata(search)
-    else:
-        result=[]
-    return render_template('/ltr/data_prediksi/editdata.html')
+        waktu=request.form.get("Waktu")
+        ID_Kebun=request.form.get("ID_Kebun")
+        User_ID=request.form.get("User_ID")
+        Nama_File=request.form.get("Nama_File")
+        Hasil_Prediksi=request.form.get("Hasil_Prediksi")
+
+        db.execute(text("UPDATE data_prediksi SET waktu=:waktu, ID_Kebun=:ID_Kebun, UserID=:User_ID, Nama_File=:Nama_File, Hasil_Prediksi=:Hasil_Prediksi WHERE ID=:id"), 
+           {"waktu": waktu, "ID_Kebun": ID_Kebun, "User_ID": User_ID, "Nama_File": Nama_File, "Hasil_Prediksi": Hasil_Prediksi, "id": id})
+
+        db.commit()
+        return redirect(url_for('data'))  
+    
+    return render_template('/ltr/data_prediksi/editdata.html',data=new_data,id=found_indexes)
 
 @app.route('/edit_kebun',methods=['POST','GET'])
 def edit_kebun():
-    return render_template('/ltr/kebun/edit.html')
+    if request.method == 'POST':
+        search = request.form.get('search')
+        result = getkebun(search)
+    else:
+        result=[]
+    return render_template('/ltr/kebun/edit.html',data=result)
+
+@app.route('/edit_kebun/<int:id>',methods=['POST','GET'])
+def edit_kebun_(id):
+    ID_Kebun=db.execute(text("Select ID_Kebun from kebun")).fetchall()
+    Latitude=db.execute(text("Select  Latitude from kebun")).fetchall()
+    Longitude=db.execute(text("Select   Longitude from kebun")).fetchall()
+    Alamat=db.execute(text("Select Alamat from kebun")).fetchall()
+    Blok=db.execute(text("Select Blok from kebun")).fetchall()
+    
+    ID_Kebun = tuple(item[0] for item in ID_Kebun)
+    Latitude = tuple(item[0] for item in Latitude)
+    Longitude = tuple(item[0] for item in Longitude)
+    Alamat = tuple(item[0] for item in Alamat)
+    Blok = tuple(item[0] for item in Blok)
+    
+    data=[
+        {
+            'ID_Kebun':ID_Kebun,
+            'Latitude':Latitude,
+            'Longitude':Longitude,
+            'Alamat':Alamat,
+            'Blok':Blok
+        }
+    ]
+    new_data = [
+    {
+
+        'ID_Kebun':ID_Kebun,
+        'Latitude': Latitude,
+        'Longitude': Longitude,
+        'Alamat': Alamat,
+        'Blok': Blok
+    }
+        for item in data
+        for ID_Kebun, Latitude, Longitude, Alamat, Blok in zip(item['ID_Kebun'],item['Latitude'], item['Longitude'], item['Alamat'], item['Blok'])
+    ]
+    
+    found_indexes = 0
+
+    for i, item in enumerate(new_data):
+        if item['ID_Kebun'] == id:
+            found_indexes=i
+
+    if request.method == 'POST':
+        Latitude=request.form.get("Latitude")
+        Longitude=request.form.get("Longitude")
+        Alamat=request.form.get("Alamat")
+        Blok=request.form.get("Blok")
+
+        db.execute(text("UPDATE kebun SET Latitude=:Latitude, Longitude=:Longitude, Alamat=:Alamat, Blok=:Blok WHERE ID_Kebun=:id"), 
+           {"Latitude": Latitude, "Longitude": Longitude, "Alamat": Alamat, "Blok": Blok, "id": id})
+
+        db.commit()
+        return redirect(url_for('kebun'))  
+    
+    return render_template('/ltr/kebun/editkebun.html',data=new_data,id=found_indexes)
 
 @app.route('/edit_operator',methods=['POST','GET'])
 def edit_operator():
-    return render_template('/ltr/operator/edit.html')
+    if request.method == 'POST':
+        search = request.form.get('search')
+        result = getoperator(search)
+    else:
+        result=[]
+    return render_template('/ltr/operator/edit.html',data=result)
+
+@app.route('/edit_operator/<userid>',methods=['POST','GET'])
+def edit_operator_(userid):
+    UserID=db.execute(text("Select UserID from operator")).fetchall()
+    Nama_Operator=db.execute(text("Select  Nama_Operator from operator")).fetchall()
+    No_HP=db.execute(text("Select No_HP from operator")).fetchall()
+    ID_Kebun=db.execute(text("Select ID_Kebun from kebun")).fetchall()
+    Alamat=db.execute(text("Select Alamat from operator")).fetchall()
+    
+    UserID = tuple(item[0] for item in UserID)
+    Nama_Operator = tuple(item[0] for item in Nama_Operator)
+    No_HP = tuple(item[0] for item in No_HP)
+    ID_Kebun = tuple(item[0] for item in ID_Kebun)
+    Alamat = tuple(item[0] for item in Alamat)
+    
+    data=[
+        {
+            'UserID':UserID,
+            'Nama_Operator':Nama_Operator,
+            'No_HP':No_HP,
+            'ID_Kebun':ID_Kebun,
+            'Alamat':Alamat
+        }
+    ]
+    new_data = [
+    {
+
+        'UserID':UserID,
+        'Nama_Operator': Nama_Operator,
+        'No_HP': No_HP,
+        'ID_Kebun': ID_Kebun,
+        'Alamat': Alamat
+    }
+        for item in data
+        for UserID, Nama_Operator, No_HP, ID_Kebun, Alamat in zip(item['UserID'],item['Nama_Operator'], item['No_HP'], item['ID_Kebun'], item['Alamat'])
+    ]
+    
+    found_indexes = 0
+
+    for i, item in enumerate(new_data):
+        if item['UserID'] == userid:
+            found_indexes=i
+
+    if request.method == 'POST':
+        Nama_Operator=request.form.get("Nama_Operator")
+        No_HP=request.form.get("No_HP")
+        ID_Kebun=request.form.get("ID_Kebun")
+        Alamat=request.form.get("Alamat")
+
+        db.execute(text("UPDATE operator SET Nama_Operator=:Nama_Operator, No_HP=:No_HP, ID_Kebun=:ID_Kebun, Alamat=:Alamat WHERE UserID=:userid"), 
+           {"Nama_Operator": Nama_Operator, "No_HP": No_HP, "ID_Kebun": ID_Kebun, "Alamat": Alamat, "userid": userid})
+
+        db.commit()
+        return redirect(url_for('operator'))  
+   
+    return render_template('/ltr/operator/editoperator.html',data=new_data,id=found_indexes)
 
 def getdata(search):
     ID = db.execute(text("SELECT * FROM data_prediksi WHERE ID = :search"), {"search": search}).fetchall()
@@ -231,12 +397,12 @@ def getdata(search):
     return ID
 
 def getkebun(search):
-    ID_Kebun=db.execute(text('SELECT * FROM '))
+    ID_Kebun=db.execute(text('SELECT * FROM kebun WHERE ID_KEBUN = :search'),{'search':search}).fetchall()
 
     return ID_Kebun
 
 def getoperator(search):
-    results=db.execute(text('SELECT * FROM '))
+    results=db.execute(text('SELECT * FROM operator where UserID = :search'),{'search':search}).fetchall()
 
     return results
 

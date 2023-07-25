@@ -41,7 +41,7 @@
                                         <td>{{item.No_HP}}</td>
                                         <td>{{item.ID_Kebun}}</td>
                                         <td>{{item.Alamat}}</td>
-                                        <td><a href="{{url_for('edit_operator_',userid=item.UserID)}}">Delete</a></td>
+                                        <td><a href="{{url_for('delete_operator_',userid=item.UserID)}}">Delete</a></td>
                                     </tr>
                                     {% set counter = counter + 1 %}
                                     {% endfor %}

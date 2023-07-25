@@ -9,7 +9,7 @@
             <div class="card">
                 <div class="card-body">
                     <div>
-                        <h2 class="card-title">Edit Data</h2>
+                        <h2 class="card-title">Delete Data</h2>
                         <br>
                         <form action="" method="POST">
                             <div class="form-group row">
@@ -45,8 +45,12 @@
                                   <input readonly class="form-control" name="Blok" value="{{data[id].Blok}}" placeholder="Blok">
                                 </div>
                             </div>
-                            <div class="right">
-                                <button type="submit" class="btn btn-primary text-white">Edit</button>
+                            <div class="text-checkbox">
+                                <span><h4><center>Yakin untuk menghapus data ini    <input type="checkbox" name="checkbox" value="Yes"></h4></span></center>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-danger text-white" name="options" value="Yes">Yes</button>
+                                <button type="submit" class="btn btn-primary text-white" name="options" value="No">No</button>
                             </div>
                         </form>
                     </div>

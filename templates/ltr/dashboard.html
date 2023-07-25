@@ -2,6 +2,9 @@
 
 {% block content %}
 <div class="page-breadcrumb">
+    {% include "includes/_message.html" %}
+    {% block body %}
+    {% endblock %}
     <div class="row align-items-center">
         <div class="col-5">
             <h4 class="page-title">Dashboard</h4>
@@ -37,7 +40,7 @@
                             <h4 class="card-title">Kebun</h4>
                         </div>
                     </div>
-                    {% for item in data %}
+                    {% for item in data2 %}
                             <h1 class="card-body"> <center>{{item.jumlah}}</h1></center>
                             <h5 class="card-subtitle"><center>Jumlah Kebun</h5></center>
                     {% endfor %}
@@ -52,7 +55,7 @@
                             <h4 class="card-title">Operator</h4>
                         </div>
                     </div>
-                    {% for item in data %}
+                    {% for item in data2 %}
                                 <h1 class="card-body"> <center>{{item.operator}}</h1></center>
                                 <h5 class="card-subtitle"><center>Jumlah Operator</h5></center>
                     {% endfor %}
@@ -68,7 +71,7 @@
                             <h4 class="card-title">Data Prediksi</h4>
                         </div>
                     </div>
-                    {% for item in data %}
+                    {% for item in data2 %}
                                 <h1 class="card-body"> <center>{{item.prediksi}}</h1></center>
                                 <h5 class="card-subtitle"><center>Jumlah Data Prediksi</h5></center>
                     {% endfor %}
@@ -111,6 +114,7 @@
                     <table class="table v-middle">
                         <thead>
                             <tr class="bg-light">
+                                <th class="border-top-0">No</th>
                                 <th class="border-top-0">User ID</th>
                                 <th class="border-top-0">Waktu</th>
                                 <th class="border-top-0">ID Kebun</th>
@@ -119,28 +123,33 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for item in data2 %}
+                            {% for row in data %}
                             <tr>
+                                <th scope="row">{{loop.index}}</th>
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <!-- <div class="m-r-10"><a
                                                 class="btn btn-circle d-flex btn-info text-white">EA</a>
                                         </div> -->
                                         <div class="">
-                                            <h4 class="m-b-0 font-16">{{item.User_ID}}</h4>
+                                            <h4 class="m-b-0 font-16">{{ row['User_ID'] }}</h4>
                                         </div>
                                     </div>
                                 </td>
-                                <td>{{item.waktu}}</td>
-                                <td>{{item.ID_Kebun}}</td>
-                                <td>{{item.Nama_File}}</td>
+                                <td>{{ row['waktu'] }}</td>
+                                <td>{{ row['ID_Kebun'] }}</td>
+                                <td>{{ row['Nama_File'] }}</td>
                                 <td>
-                                    <h5 class="m-b-0">{{ item.Hasil_Prediksi }}</h5>
+                                    <h5 class="m-b-0">{{ row['Hasil_Prediksi'] }}</h5>
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
+                    <div class="container">
+                        {{ pagination.links }}
+                        {{ pagination.info }}
+                    </div>
                 </div>
             </div>
         </div>

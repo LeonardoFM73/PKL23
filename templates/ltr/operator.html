@@ -30,14 +30,18 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Default Table</h4>
-                    <h6 class="card-subtitle">Using the most basic table markup, here’s how
-                        <code>.table</code>-based tables look in Bootstrap. All table styles are inherited
-                        in Bootstrap 4, meaning any nested tables will be styled in the same manner as the
-                        parent.</h6>
-                    <h6 class="card-title m-t-40"><i
-                            class="m-r-5 font-18 mdi mdi-numeric-1-box-multiple-outline"></i> Table With
-                        Outside Padding</h6>
+                    <form method="POST">
+                        <div class="form-group row">
+                            <label for="Latitude" class="col-sm-1 col-form-label">User ID</label>
+                            <div class="col-sm-10">
+                              <input type="text" name="search" required>
+                              <input type="submit" value="Search">
+                            </div>
+                            <div class="col-sm-1">
+                                <a href="{{url_for('add_operator')}}" class="btn btn-success text-white">Add</a>
+                            </div>
+                        </div>
+                    </form>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -48,28 +52,30 @@
                                     <th scope="col">No HP</th>
                                     <th scope="col">ID Kebun</th>
                                     <th scope="col">Alamat</th>
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for item in data %}
                                 <tr>
-                                    <th scope="row">1</th>
-                                    <td>{{item.User_ID}}</td>
+                                    <th scope="row">{{loop.index}}</th>
+                                    <td>{{item.UserID}}</td>
                                     <td>{{item.Nama_Operator}}</td>
-                                    <td>{{item.No_HP}}</td>
-                                    <td>{{item.ID_Kebun}}</td>
-                                    <td>{{item.Alamat}}</td>
+                                    <td>{{item['No_HP']}}</td>
+                                    <td>{{item['ID_Kebun']}}</td>
+                                    <td>{{item['Alamat']}}</td>
+                                    <td><a href="{{url_for('delete_operator_',userid=item.UserID)}}" class="btn btn-danger text-white">Delete</a>
+                                    <a href="{{url_for('edit_operator_',userid=item.UserID)}}" class="btn btn-primary text-white">Edit</a></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
+                        <div class="container">
+                            {{pagination.links}}
+                            {{pagination.info}}
+                        </div>
                     </div>
-                    <a href="{{url_for('add_operator')}}" class="btn btn-success text-white"
-                    target="_blank">Add</a>
-                    <a href="{{url_for('delete_operator')}}" class="btn btn-danger text-white"
-                    target="_blank">Delete</a>
-                    <a href="{{url_for('edit_operator')}}" class="btn btn-primary text-white"
-                    target="_blank">Edit</a>
                 </div>
             </div>
         </div>

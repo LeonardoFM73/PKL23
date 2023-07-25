@@ -33,9 +33,10 @@
                             <div class="form-group row">
                                 <label for="ID_Kebun" class="col-sm-2 col-form-label">ID Kebun</label>
                                 <div class="col-sm-10">
-                                  <select name="ID_Kebun">
-                                    {% for item in data %}
-                                    <option selected="{{data[id].ID_Kebun}}">{{item.ID_Kebun}}</option>
+                                  <select name="ID_Kebun" required>
+                                    <option></option>
+                                    {% for item in data2 %}
+                                    <option>{{item.ID_Kebun}}</option>
                                     {% endfor %}
                                   </select>
                                 </div>

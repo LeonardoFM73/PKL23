@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <title>Dashboard</title>
+</head>
+<body>>
+        <h1>Welcome to Dashboard</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Waktu</th>
+                    <th>ID Kebun</th>
+                    <th>User ID</th>
+                    <th>Nama File</th>
+                    <th>Hasil Prediksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                <tr>
+                    <td>{{ row['waktu'] }}</td>
+                    <td>{{ row['ID_Kebun'] }}</td>
+                    <td>{{ row['User_ID'] }}</td>
+                    <td>{{ row['Nama_File'] }}</td>
+                    <td>{{ row['Hasil_Prediksi'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    
+        <!-- Pagination links -->
+    </div>
+    <div class="container">
+        {{ pagination.info }}
+        {{ pagination.links }}
+    </div>
+</body>
+</html>

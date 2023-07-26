@@ -6,6 +6,9 @@ from flask_paginate import Pagination, get_page_parameter
 
 from passlib.hash import sha256_crypt
 
+from datetime import datetime
+
+
 engine=create_engine("mysql+pymysql://root:@localhost:3306/leafo")
 #mysql+pymysql://username:password@localhost/databasename
 db=scoped_session(sessionmaker(bind=engine))
@@ -84,6 +87,7 @@ def login():
 
 @app.route('/add_data',methods=['POST','GET'])
 def add_data():
+    currentDateAndTime = datetime.now()
     if session["log"] is True:
         ID_Kebun=db.execute(text("Select * from kebun")).fetchall()
         User_ID=db.execute(text("Select * from operator")).fetchall()
@@ -158,14 +162,24 @@ def delete_data_(id):
                 found_indexes=i
 
         if request.method == 'POST':
+            checkbox_list= request.form.getlist('checkbox')
+            if checkbox_list:
+                # The list is not empty, so it is safe to access its first element
+                checkbox = checkbox_list[0]
+            else:
+                # The list is empty, handle this situation accordingly (e.g., set a default value or show an error message)
+                # For example, if you want to set a default value:
+                checkbox = 'No'
             if request.form.getlist('options')[0] == "Yes":
-                if request.form.getlist('checkbox')[0]=="Yes":
+                if checkbox=="Yes":
                     db.execute(text("DELETE FROM data_prediksi WHERE data_prediksi.ID = :id"),{"id":id})
                     db.commit()
                     return redirect(url_for('data'))
+                else:
+                    flash("Please check the box","danger")
+                    return redirect(url_for('delete_data_',id=id))
             else:
                 return redirect(url_for('data'))
-            return redirect(url_for('data'))  
 
         return render_template('/ltr/data_prediksi/deletedata.html',data=new_data,id=found_indexes,user=session['foto'])
 
@@ -188,14 +202,24 @@ def delete_kebun_(id):
                 found_indexes=i
 
         if request.method == 'POST':
+            checkbox_list= request.form.getlist('checkbox')
+            if checkbox_list:
+                # The list is not empty, so it is safe to access its first element
+                checkbox = checkbox_list[0]
+            else:
+                # The list is empty, handle this situation accordingly (e.g., set a default value or show an error message)
+                # For example, if you want to set a default value:
+                checkbox = 'No'
             if request.form.getlist('options')[0] == "Yes":
-                if request.form.getlist('checkbox')[0]=="Yes":
+                if checkbox=="Yes":
                     db.execute(text("DELETE FROM kebun WHERE kebun.ID_Kebun = :id"),{"id":id})
                     db.commit()
                     return redirect(url_for('kebun'))
+                else:
+                    flash("Please check the box","danger")
+                    return redirect(url_for('delete_kebun_',id=id))
             else:
                 return redirect(url_for('kebun'))
-            return redirect(url_for('kebun'))  
 
         return render_template('/ltr/kebun/deletekebun.html',data=new_data,id=found_indexes,user=session['foto'])
 
@@ -216,15 +240,25 @@ def delete_operator_(userid):
                 found_indexes=i
 
         if request.method == 'POST':
+            checkbox_list= request.form.getlist('checkbox')
+            if checkbox_list:
+                # The list is not empty, so it is safe to access its first element
+                checkbox = checkbox_list[0]
+            else:
+                # The list is empty, handle this situation accordingly (e.g., set a default value or show an error message)
+                # For example, if you want to set a default value:
+                checkbox = 'No'
             if request.form.getlist('options')[0] == "Yes":
-                if request.form.getlist('checkbox')[0]=="Yes":
+                if checkbox =="Yes":
                     db.execute(text("DELETE FROM operator WHERE operator.UserID = :userid"),{"userid":userid})
                     db.commit()
                     return redirect(url_for('operator'))
+                else:
+                    flash("Please check the box","danger")
+                    return redirect(url_for('delete_operator_',userid=userid))
             else:
                 return redirect(url_for('operator'))
-            return redirect(url_for('operator'))  
-
+            
         return render_template('/ltr/operator/deleteoperator.html',data=new_data,id=found_indexes,user=session['foto'])
 
     if session["log"] is True:
@@ -365,7 +399,7 @@ def getkebun(search):
     return ID_Kebun
 
 def getoperator(search):
-    results=db.execute(text('SELECT * FROM operator where UserID = :search'),{'search':search}).fetchall()
+    results=db.execute(text("SELECT * FROM operator where UserID LIKE '%' :search '%' "),{'search':search}).fetchall()
 
     return results
 
@@ -596,7 +630,7 @@ def operator():
         new_data = [dict(zip(keys, item)) for item in data]
 
         if request.method == 'POST':
-            search = request.form.get('search')
+            search = "%"+request.form.get('search')+"%"
             new_data = getoperator(search)
 
         page = request.args.get(get_page_parameter(), type=int, default=1)

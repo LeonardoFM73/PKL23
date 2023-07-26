@@ -2,6 +2,9 @@
 
 {% block content%}
 <div class="page-breadcrumb">
+    {% include "includes/_message.html" %}
+    {% block body %}
+    {% endblock %}
     <div class="row align-items-center">
         <div class="col-5">
             <h4 class="page-title">Data Prediksi</h4>
@@ -54,7 +57,6 @@
                                     <th scope="col">Nama File</th>
                                     <th scope="col">Hasil Prediksi</th>
                                     <th scope="col"></th>
-                                    <th scope="col"></th>
 
                                 </tr>
                             </thead>
@@ -68,8 +70,8 @@
                                     <td>{{item.ID_Kebun}}</td>
                                     <td>{{item.Nama_File}}</td>
                                     <td>{{item.Hasil_Prediksi}}</td>
-                                    <td><a href="{{url_for('delete_data_',id=item.ID)}}" class="btn btn-danger text-white">Delete</a>
-                                    <a href="{{url_for('edit_data_',id=item.ID)}}" class="btn btn-primary text-white">Edit</a></td>
+                                    <td><a href="{{url_for('delete_data_',id=item.ID)}}" class="btn btn-danger text-white"><i class="material-icons" style="font-size: 20px ;color:white">delete</i></a>
+                                    <a href="{{url_for('edit_data_',id=item.ID)}}" class="btn btn-primary text-white"><i class="material-icons" style="font-size: 20px ;color:white">edit</i></a></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

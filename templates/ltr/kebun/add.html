@@ -4,6 +4,9 @@
 {{data}}
 
 <div clas="container-fluid">
+    {% include "includes/_message.html" %}
+    {% block body %}
+    {% endblock %}
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -55,7 +58,7 @@
                                         document.getElementById('longitude').value = event.latlng.lng;
                                         
                                     })
-
+                                    
                                 </script>
                                 </div>
                             </div>

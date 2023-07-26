@@ -1,1 +1,1 @@
-image.save('static/assets/images/users/'+session['username']+".jpg")
+SELECT * FROM operator where UserID LIKE '%s'

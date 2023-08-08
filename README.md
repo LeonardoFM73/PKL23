@@ -2,5 +2,5 @@
 
 Project PKL 2023 Universitas Airlangga x BRIN
 <br>DIkerjakan oleh
-Asany Herdiana
+Asany Herdiana dan
 Leonardo Fajar Mardika

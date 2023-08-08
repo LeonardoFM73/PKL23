@@ -1,0 +1,75 @@
+{% extends "ltr/base.html" %}
+
+{% block content%}
+
+
+<div clas="container-fluid">
+    {% include "includes/_message.html" %}
+    {% block body %}
+    {% endblock %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div>
+                        <h2 class="card-title">Edit Data</h2>
+                        <br>
+                        <form action="" method="POST">
+                            <div class="form-group row">
+                                <label for="Waktu" class="col-sm-2 col-form-label">ID</label>
+                                <div class="col-sm-10">
+                                  <input readonly class="form-control" name="ID" value="{{data[id].ID}}"  placeholder="ID">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="Waktu" class="col-sm-2 col-form-label">Waktu</label>
+                                <div class="col-sm-10">
+                                  <input type="datetime-local" class="form-control" name="Waktu" value="{{data[id].Waktu}}" placeholder="Waktu">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="ID_Kebun" class="col-sm-2 col-form-label">ID Kebun</label>
+                                <div class="col-sm-10">
+                                  <select name="ID_Kebun" required>
+                                    <option></option>
+                                    {% for item in data2 %}
+                                    <option >{{item.ID_Kebun}}</option>
+                                    {% endfor %}
+                                  </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="User ID" class="col-sm-2 col-form-label">UserID</label>
+                                <div class="col-sm-10">
+                                    <select name="User_ID" required>
+                                        <option></option>
+                                        {% for item in data3 %}
+                                        <option>{{item.UserID}}</option>
+                                        {% endfor %}
+                                      </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="Nama File" class="col-sm-2 col-form-label">Nama File</label>
+                                <div class="col-sm-10">
+                                  <input type="text" class="form-control" name="Nama_File" value="{{data[id].Nama_File}}" placeholder="Nama File">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="Hasil Prediksi" class="col-sm-2 col-form-label">Hasil Prediksi</label>
+                                <div class="col-sm-10">
+                                  <input type="text" class="form-control" name="Hasil_Prediksi" value="{{data[id].Hasil_Prediksi}}" placeholder="Hasil Prediksi">
+                                </div>
+                            </div>
+                            <div class="right">
+                                <button type="submit" class="btn btn-primary text-white">Edit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock%}

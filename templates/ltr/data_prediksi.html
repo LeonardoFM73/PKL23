@@ -1,0 +1,99 @@
+{% extends "ltr/base.html" %}
+
+{% block content%}
+<div class="page-breadcrumb">
+    {% include "includes/_message.html" %}
+    {% block body %}
+    {% endblock %}
+    <div class="row align-items-center">
+        <div class="col-5">
+            <h4 class="page-title">Data Prediksi</h4>
+            <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Data Prediksi</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ============================================================== -->
+<!-- End Bread crumb and right sidebar toggle -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- Container fluid  -->
+<!-- ============================================================== -->
+<div class="container-fluid">
+    <!-- ============================================================== -->
+    <!-- Start Page Content -->
+    <!-- ============================================================== -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="form-group row">
+                            <label for="Latitude" class="col-sm-1 col-form-label">ID</label>
+                            <div class="col-sm-10">
+                              <input type="text" name="search" required>
+                              <input type="submit" value="Search">
+                            </div>
+                            <div class="col-sm-1">
+                                <a href="{{url_for('add_data')}}" class="btn btn-success text-white">Add</a>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No</th>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">User ID</th>
+                                    <th scope="col">Waktu</th>
+                                    <th scope="col">ID Kebun</th>
+                                    <th scope="col">Nama File</th>
+                                    <th scope="col">Hasil Prediksi</th>
+                                    <th scope="col"></th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in data %}
+                                <tr>
+                                    <th scope="row">{{loop.index}}</th>
+                                    <td>{{item.ID}}</td>
+                                    <td>{{item.UserID}}</td>
+                                    <td>{{item.Waktu}}</td>
+                                    <td>{{item.ID_Kebun}}</td>
+                                    <td>{{item.Nama_File}}</td>
+                                    <td>{{item.Hasil_Prediksi}}</td>
+                                    <td><a href="{{url_for('delete_data_',id=item.ID)}}" class="btn btn-danger text-white"><i class="material-icons" style="font-size: 20px ;color:white">delete</i></a>
+                                    <a href="{{url_for('edit_data_',id=item.ID)}}" class="btn btn-primary text-white"><i class="material-icons" style="font-size: 20px ;color:white">edit</i></a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="container">
+                            {{pagination.links}}
+                            {{pagination.info}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- End PAge Content -->
+    <!-- ============================================================== -->
+    <!-- ============================================================== -->
+    <!-- Right sidebar -->
+    <!-- ============================================================== -->
+    <!-- .right-sidebar -->
+    <!-- ============================================================== -->
+    <!-- End Right sidebar -->
+    <!-- ============================================================== -->
+</div>
+{% endblock%}

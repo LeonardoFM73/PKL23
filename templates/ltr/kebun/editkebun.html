@@ -1,0 +1,97 @@
+{% extends "ltr/base.html" %}
+
+{% block content%}
+
+
+<div clas="container-fluid">
+    {% include "includes/_message.html" %}
+    {% block body %}
+    {% endblock %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div>
+                        <h2 class="card-title">Edit Data</h2>
+                        <br>
+                        <form action="" method="POST">
+                            <div class="form-group row">
+                                <label for="ID_Kebun" class="col-sm-2 col-form-label">ID Kebun</label>
+                                <div class="col-sm-10">
+                                  <input readonly class="form-control" name="ID_Kebun" value="{{data[id].ID_Kebun}}" placeholder="ID KEbun">
+                                </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="Latitude" class="col-sm-2 col-form-label">Latitude</label>
+                                <div class="col-sm-10">
+                                  <input type="text" id="latitude" class="form-control" name="Latitude" value="{{data[id].Latitude}}" placeholder="Latitude">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="Longitude" class="col-sm-2 col-form-label">Longitude</label>
+                                <div class="col-sm-10">
+                                    <div class="col-sm-10">
+                                        <input type="text" id="longitude" class="form-control" name="Longitude" value="{{data[id].Longitude}}" placeholder="Longitude">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="" class="col-sm-2 col-form-label"></label>
+                                <div class="col-sm-10">
+
+                                <div id="map"></div>
+                                
+                                <script>
+                                    let mapOptions = {
+                                        center:[-7.65, 110.141],
+                                        zoom:5
+                                    }
+
+                                    let map = new L.map('map' , mapOptions);
+
+                                    let layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+                                    map.addLayer(layer);
+
+
+                                    let marker = null;
+                                    map.on('click', (event)=> {
+
+                                        if(marker !== null){
+                                            map.removeLayer(marker);
+                                        }
+
+                                        marker = L.marker([event.latlng.lat , event.latlng.lng]).addTo(map);
+
+                                        document.getElementById('latitude').value = event.latlng.lat;
+                                        document.getElementById('longitude').value = event.latlng.lng;
+                                        
+                                    })
+
+                                </script>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="Alamat" class="col-sm-2 col-form-label">Alamat</label>
+                                <div class="col-sm-10">
+                                  <input type="text" class="form-control" name="Alamat" value="{{data[id].Alamat}}" placeholder="Alamat">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="Blok" class="col-sm-2 col-form-label">Blok</label>
+                                <div class="col-sm-10">
+                                  <input type="text" class="form-control" name="Blok" value="{{data[id].Blok}}" placeholder="Blok">
+                                </div>
+                            </div>
+                            <div class="right">
+                                <button type="submit" class="btn btn-primary text-white">Edit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock%}

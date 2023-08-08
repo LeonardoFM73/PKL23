@@ -1,0 +1,64 @@
+{% extends "ltr/base.html" %}
+
+{% block content %}
+<div clas="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div>
+                        <h2 class="card-title">Edit Data</h2>
+                        <form method="POST">
+                            <div class="form-group row">
+                                <label for="Latitude" class="col-sm-1 col-form-label">User ID</label>
+                                <div class="col-sm-10">
+                                  <input type="text" name="search" required>
+                                  <input type="submit" value="Search">
+                                </div>
+                            </div>
+                        </form>
+                        {% if data | length != 0 %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">No</th>
+                                        <th scope="col">UserID</th>
+                                        <th scope="col">Nama Operator</th>
+                                        <th scope="col">No HP</th>
+                                        <th scope="col">ID Kebun</th>
+                                        <th scope="col">Alamat</th>
+                                        <th scope="col">Edit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% set counter = 1 %}
+                                    {% for item in data %}
+                                    <tr>
+                                        <th scope="row">{{counter}}</th>
+                                        <td>{{item.UserID}}</td>
+                                        <td>{{item.Nama_Operator}}</td>
+                                        <td>{{item.No_HP}}</td>
+                                        <td>{{item.ID_Kebun}}</td>
+                                        <td>{{item.Alamat}}</td>
+                                        <td><a href="{{url_for('edit_operator_',userid=item.UserID)}}">Edit</a></td>
+                                    </tr>
+                                    {% set counter = counter + 1 %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div id="demo">No search results.</div>
+                        {% endif %}
+                    </div>
+                    <!-- <div>
+                        {}
+                        <h2 class="card-title">Edit Data</h2>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
+{% endblock%}

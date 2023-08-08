@@ -1,0 +1,66 @@
+{% extends "ltr/base.html" %}
+
+{% block content%}
+
+
+<div clas="container-fluid">
+    {% include "includes/_message.html" %}
+    {% block body %}
+    {% endblock %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div>
+                        <h2 class="card-title">Delete Data</h2>
+                        <br>
+                        <form action="" method="POST">
+                            <div class="form-group row">
+                                <label for="ID_Kebun" class="col-sm-2 col-form-label">ID Kebun</label>
+                                <div class="col-sm-10">
+                                  <input readonly class="form-control" name="ID_Kebun" value="{{data[id].ID_Kebun}}" placeholder="ID KEbun">
+                                </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="Latitude" class="col-sm-2 col-form-label">Latitude</label>
+                                <div class="col-sm-10">
+                                  <input readonly class="form-control" name="Latitude" value="{{data[id].Latitude}}" placeholder="Latitude">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="Longitude" class="col-sm-2 col-form-label">Longitude</label>
+                                <div class="col-sm-10">
+                                    <div class="col-sm-10">
+                                        <input readonly class="form-control" name="Longitude" value="{{data[id].Longitude}}" placeholder="Longitude">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="Alamat" class="col-sm-2 col-form-label">Alamat</label>
+                                <div class="col-sm-10">
+                                  <input readonly class="form-control" name="Alamat" value="{{data[id].Alamat}}" placeholder="Alamat">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="Blok" class="col-sm-2 col-form-label">Blok</label>
+                                <div class="col-sm-10">
+                                  <input readonly class="form-control" name="Blok" value="{{data[id].Blok}}" placeholder="Blok">
+                                </div>
+                            </div>
+                            <div class="text-checkbox">
+                                <span><h4><center>Yakin untuk menghapus data ini    <input type="checkbox" name="checkbox" value="Yes"></h4></span></center>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-danger text-white" name="options" value="Yes">Yes</button>
+                                <button type="submit" class="btn btn-primary text-white" name="options" value="No">No</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock%}

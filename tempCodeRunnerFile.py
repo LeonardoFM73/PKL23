@@ -1,1 +1,0 @@
-SELECT * FROM operator where UserID LIKE '%s'

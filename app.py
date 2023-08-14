@@ -15,12 +15,12 @@ db=scoped_session(sessionmaker(bind=engine))
 
 
 app = Flask(__name__)
-app.secret_key = "LeonardoFM"
+app.secret_key = "uOQbEJCFY1HB0wRczaWB23K4NbJHcTVC"
 
 
 @app.route('/')
 def welcome():
-    return render_template('welcome.html')
+    return redirect(url_for('login'))
 
 @app.route('/register',methods=['POST'  ,'GET'])
 def register():
